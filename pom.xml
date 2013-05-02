@@ -309,6 +309,21 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>sqlserver</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geotools.jdbc</groupId>
+          <artifactId>gt-jdbc-sqlserver</artifactId>
+          <version>${gt.version}</version>
+        </dependency>
+        <dependency>
+           <groupId>com.microsoft</groupId>
+           <artifactId>sqljdbc4</artifactId>
+           <version>3.0</version>
+          </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 
   <properties>
