@@ -18,7 +18,7 @@ FOR /f "tokens=*" %%X IN ('%JYTHON_EXE% %~dp0geoscript-classpath') DO (
     SET CLASSPATH=%%X
 )
 
-%JYTHON_EXE%
+%JYTHON_EXE% %1
 SET JYTHON_EXE=
 
 :NO_JYTHON_HOME
