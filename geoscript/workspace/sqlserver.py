@@ -4,7 +4,6 @@ The :mod:`workspace.sqlserver` module a workspace implementation based on the co
 from java.lang.System import getProperty as sysprop
 from geoscript.workspace import Workspace
 from org.geotools.data.sqlserver import SQLServerDataStoreFactory
-#from org.geotools.data.oracle import OracleNGDataStoreFactory
 
 class Sqlserver(Workspace):
   """
@@ -26,12 +25,13 @@ class Sqlserver(Workspace):
   """
 
   def __init__(self, db, host='localhost', port=1433, schema=None,
-               user=sysprop('user.name'), passwd=None):
+               user=sysprop('user.name'), passwd=None, expose_pk=False, native_serialization=False):
 
     if schema is None:
       schema = user
 
     params = {'host': host, 'port': port,  'schema': schema, 'database': db,
-              'user':user, 'passwd': passwd, 'dbtype': 'sqlserver'}
+              'user':user, 'passwd': passwd, 'Expose primary keys': expose_pk, 
+              'dbtype': 'sqlserver', 'NATIVE_SERIALIZATION': native_serialization}
     
     Workspace.__init__(self, SQLServerDataStoreFactory(), params)
