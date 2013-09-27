@@ -11,10 +11,12 @@ from geoscript.layer.stats import Stats
 from geoscript.util.data import readFeatures
 from org.geoscript.util import CollectionDelegatingFeatureSource
 from org.geotools.data import FeatureSource, FeatureStore
-from org.geotools.data import DefaultQuery, Query, Transaction
+from org.geotools.data import DefaultQuery, Query, Transaction, DefaultTransaction
 from org.geotools.factory import CommonFactoryFinder
 from org.geotools.feature import FeatureCollection, FeatureCollections
 from org.opengis.filter.sort import SortOrder
+import sys,traceback
+
 
 _filterFactory = CommonFactoryFinder.getFilterFactory(None)
 
@@ -366,6 +368,36 @@ class Layer(object):
     fc = FeatureCollections.newCollection() 
     fc.add(f._feature)
     self._source.addFeatures(fc)
+
+  def addList(self, featureList):
+    if self.readonly:
+      raise Exception('Layer is read-only')
+
+    fc = FeatureCollections.newCollection() 
+
+    for o in featureList:
+      if isinstance(o, feature.Feature):
+        f = o
+        if not f.schema:
+          f.schema = self.schema
+      elif isinstance(o, (dict,list)):
+        f = self.schema.feature(o)
+        
+      fc.add(f._feature)
+
+    trans = DefaultTransaction("ex")
+    self._source.setTransaction(trans)
+    try:
+      self._source.addFeatures(fc)
+      trans.commit()
+      trans.close()
+    except:
+      print 'Exception', sys.exc_info()[2]
+      print sys.exc_info()
+      traceback.print_stack()
+      print repr(traceback.extract_stack())
+      print repr(traceback.format_stack())
+      trans.rollback()
 
   def update(self, feature, fields=None):
     """
